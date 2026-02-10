@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运行提示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        /* 定义CSS变量，方便切换主题 */
+        :root {
+            --bg-gradient-start: #f5f7fa;
+            --bg-gradient-end: #c3cfe2;
+            --container-bg: #ffffff;
+            --container-border: rgba(255, 255, 255, 0.8);
+            --container-shadow: rgba(31, 38, 135, 0.1);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --primary-color: #6c63ff;
+            --primary-hover: #5a52e6;
+            --back-btn-bg: #ffffff;
+            --back-btn-hover: #f8f7ff;
+            --back-btn-border: #6c63ff;
+            --btn-shadow: rgba(0, 0, 0, 0.08);
+            --primary-shadow: rgba(108, 99, 255, 0.2);
+            --primary-shadow-hover: rgba(108, 99, 255, 0.3);
+            --back-shadow-hover: rgba(108, 99, 255, 0.15);
+        }
+
+        /* 深色模式变量 */
+        .dark-mode {
+            --bg-gradient-start: #1a202c;
+            --bg-gradient-end: #2d3748;
+            --container-bg: #1e293b;
+            --container-border: rgba(75, 85, 99, 0.8);
+            --container-shadow: rgba(0, 0, 0, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #e2e8f0;
+            --primary-color: #818cf8;
+            --primary-hover: #6366f1;
+            --back-btn-bg: #273449;
+            --back-btn-hover: #334155;
+            --back-btn-border: #818cf8;
+            --btn-shadow: rgba(0, 0, 0, 0.2);
+            --primary-shadow: rgba(129, 140, 248, 0.2);
+            --primary-shadow-hover: rgba(129, 140, 248, 0.3);
+            --back-shadow-hover: rgba(129, 140, 248, 0.15);
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        /* 主题切换按钮样式 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--container-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--btn-shadow);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--primary-shadow);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .container {
+            background: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--container-shadow);
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--container-border);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .icon-box {
+            margin-bottom: 24px;
+        }
+
+        .icon-box svg {
+            width: 64px;
+            height: 64px;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .title {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .message {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            transition: color 0.3s ease;
+        }
+
+        /* 按钮容器，实现两个按钮并排 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .github-link, .back-link {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 12px var(--btn-shadow);
+        }
+
+        .github-link {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 12px var(--primary-shadow);
+        }
+
+        .github-link:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--primary-shadow-hover);
+        }
+
+        .back-link {
+            background-color: var(--back-btn-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--back-btn-border);
+        }
+
+        .back-link:hover {
+            background-color: var(--back-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--back-shadow-hover);
+        }
+
+        .github-link:active, .back-link:active {
+            transform: translateY(0);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .message {
+                font-size: 15px;
+                margin-bottom: 24px;
+            }
+
+            .github-link, .back-link {
+                padding: 10px 20px;
+                font-size: 13px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .icon-box svg {
+                width: 56px;
+                height: 56px;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="container">
+        <div class="icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <h1 class="title">运行提示</h1>
+        <p class="message">啊哦，python文件不能运行在网站上哦，请去github下载源码运行哦</p>
+        <div class="btn-group">
+            <a href="../index.html" class="back-link">返回首页</a>
+            <a href="https://github.com/wangdexinya/python.mycraft/" class="github-link">前往 GitHub 下载源码</a>
+        </div>
+    </div>
+
+    <script>
+        // 主题切换逻辑
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('svg');
+
+        // 检查本地存储的主题偏好
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            updateThemeIcon(true);
+        }
+
+        // 切换主题按钮点击事件
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            // 保存主题偏好到本地存储
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            // 更新图标
+            updateThemeIcon(isDarkMode);
+        });
+
+        // 更新主题图标（太阳/月亮切换）
+        function updateThemeIcon(isDark) {
+            if (isDark) {
+                // 切换为月亮图标
+                themeIcon.innerHTML = `
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                `;
+            } else {
+                // 切换为太阳图标
+                themeIcon.innerHTML = `
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
